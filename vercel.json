@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/generateur-schema", "destination": "/generateur-schema.html" }
+  ]
+}
