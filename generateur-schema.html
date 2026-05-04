@@ -22,15 +22,26 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.
 .card{background:var(--card);border-radius:var(--r);border:1px solid var(--br);box-shadow:0 1px 4px rgba(61,71,232,.06);padding:24px;margin-bottom:20px}
 .step{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin-bottom:16px}
 .step span{color:var(--b)}
-/* Type grid */
-.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-@media(max-width:600px){.tg{grid-template-columns:repeat(3,1fr)}}
-.tb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:var(--rs);border:2px solid var(--br);background:var(--bg);cursor:pointer;transition:all .15s;text-align:center;font-family:var(--font)}
-.tb:hover{border-color:var(--bm);transform:scale(1.03)}
-.tb.on{border-color:var(--b);background:var(--bl)}
-.tb .ic{font-size:20px;line-height:1}
-.tb .lb{font-size:11px;font-weight:600;color:var(--tx);line-height:1.2}
-.tb.on .lb{color:var(--b)}
+/* Type select */
+.type-wrap{position:relative}
+.type-sel{width:100%;padding:12px 40px 12px 16px;border-radius:var(--rs);border:2px solid var(--b);background:var(--bl);color:var(--b);font-family:var(--font);font-size:14px;font-weight:700;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none}
+.type-sel:focus{box-shadow:0 0 0 3px rgba(61,71,232,.15)}
+.type-arrow{position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--b);font-size:12px}
+/* Modal overlay */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:var(--card);border-radius:var(--r);padding:28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-title{font-size:16px;font-weight:800;color:var(--tx);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--mu);margin-bottom:20px}
+.modal-steps{list-style:none;margin-bottom:20px}
+.modal-steps li{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:13px;color:var(--tx)}
+.modal-steps li .num{width:22px;height:22px;border-radius:50%;background:var(--bl);color:var(--b);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap}
+.modal-open{flex:1;padding:10px 16px;border-radius:var(--rb);background:var(--b);color:#fff;font-family:var(--font);font-size:13px;font-weight:700;border:none;cursor:pointer;text-decoration:none;text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.modal-open:hover{background:var(--bh)}
+.modal-close{padding:10px 16px;border-radius:var(--rb);background:var(--bg);color:var(--mu);font-family:var(--font);font-size:13px;font-weight:600;border:1px solid var(--br);cursor:pointer}
+.modal-close:hover{background:var(--br)}
+.modal-copied{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:var(--rs);background:#f0fdf4;border:1px solid #86efac;margin-bottom:16px;font-size:12px;font-weight:600;color:#15803d}
 /* Form */
 .fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--bl);color:var(--b);font-size:12px;font-weight:600}
@@ -106,7 +117,10 @@ pre.script{color:#FCD34D;max-height:160px}
     <div>
       <div class="card">
         <div class="step"><span>01 —</span> Choisissez le type de schéma</div>
-        <div class="tg" id="tg"></div>
+        <div class="type-wrap">
+          <select class="type-sel" id="typesel"></select>
+          <span class="type-arrow">▼</span>
+        </div>
       </div>
       <div class="card">
         <div class="fh">
@@ -131,6 +145,19 @@ pre.script{color:#FCD34D;max-height:160px}
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<!-- Validation modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-copied" id="modal-copied">✅ Code copié dans votre presse-papiers !</div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <ul class="modal-steps" id="modal-steps"></ul>
+    <div class="modal-actions">
+      <a class="modal-open" id="modal-link" href="#" target="_blank" rel="noopener">Ouvrir l'outil →</a>
+      <button class="modal-close" id="modal-close">Fermer</button>
+    </div>
+  </div>
+</div>
 <script>
 (function(){
 'use strict';
@@ -370,7 +397,8 @@ function gen(){
 }
 
 function renderTG(){
-  document.getElementById('tg').innerHTML=T.map(t=>`<button class="tb${S.type===t.v?' on':''}" data-t="${t.v}"><span class="ic">${t.i}</span><span class="lb">${t.l}</span></button>`).join('');
+  const sel=document.getElementById('typesel');
+  sel.innerHTML=T.map(t=>`<option value="${t.v}"${S.type===t.v?' selected':''}>${t.i}  ${t.l}</option>`).join('');
 }
 
 function renderForm(){
@@ -390,18 +418,58 @@ function renderOut(){
   out.innerHTML=`
     <div class="vrow">
       <span class="vlbl">Valider :</span>
-      <button class="vbtn" id="vg">🔍 Google Rich Results</button>
-      <button class="vbtn" id="vs">✅ Schema.org</button>
+      <button class="vbtn" id="vg">🔍 Tester sur Google</button>
+      <button class="vbtn" id="vs">✅ Valider Schema.org</button>
     </div>
-    <div class="cb"><pre class="code json" id="jpre">${e(json)}</pre><button class="cpbtn" id="cj">Copier JSON</button></div>
-    <div class="sh"><div class="sl">Balise à intégrer dans votre <code>&lt;head&gt;</code></div><button class="btn btn-p" id="cs" style="font-size:12px;padding:7px 14px">Copier la balise →</button></div>
+    <div class="cb"><pre class="code json">${e(json)}</pre><button class="cpbtn" id="cj">Copier JSON</button></div>
+    <div class="sh"><div class="sl">Balise à coller dans votre <code>&lt;head&gt;</code></div><button class="btn btn-p" id="cs" style="font-size:12px;padding:7px 14px">Copier la balise →</button></div>
     <div class="cb"><pre class="code script">${e(tag)}</pre></div>
     <div class="tip"><span>💡</span><p><strong>WordPress / Divi :</strong> Collez dans <em>Divi → Thème Options → Intégration → &lt;head&gt;</em> ou dans un module Code sur la page.</p></div>`;
   document.getElementById('cj').onclick=function(){cp(json,this,'JSON copié !')};
   document.getElementById('cs').onclick=function(){cp(tag,this,'Balise copiée !')};
-  document.getElementById('vg').onclick=function(){cp(tag,null,null);toast('Code copié ! Collez-le dans Google Rich Results →');window.open('https://search.google.com/test/rich-results','_blank')};
-  document.getElementById('vs').onclick=function(){cp(json,null,null);toast('JSON copié ! Collez-le dans Schema.org Validator →');window.open('https://validator.schema.org/','_blank')};
+  document.getElementById('vg').onclick=function(){
+    cp(tag,null,null);
+    openModal({
+      title:'🔍 Tester sur Google Rich Results',
+      sub:'L\'outil Google ne peut pas recevoir le code directement via un lien — voici comment faire :',
+      steps:[
+        'Le code a été <strong>copié automatiquement</strong> dans votre presse-papiers.',
+        'Cliquez sur <strong>"Ouvrir Google Rich Results →"</strong> ci-dessous.',
+        "Sur la page qui s'ouvre, cliquez sur l'onglet <strong>\"Tester du code\"</strong> (pas \"Tester l'URL\").",
+        'Collez le code dans la zone de texte (<strong>Ctrl+V</strong> ou <strong>Cmd+V</strong>).',
+        'Cliquez sur <strong>"Tester"</strong>.'
+      ],
+      url:'https://search.google.com/test/rich-results'
+    });
+  };
+  document.getElementById('vs').onclick=function(){
+    cp(json,null,null);
+    openModal({
+      title:'✅ Valider sur Schema.org',
+      sub:'Le validateur Schema.org ne peut pas recevoir le code directement via un lien — voici comment faire :',
+      steps:[
+        'Le JSON-LD a été <strong>copié automatiquement</strong> dans votre presse-papiers.',
+        'Cliquez sur <strong>"Ouvrir Schema.org Validator →"</strong> ci-dessous.',
+        "Sur la page qui s'ouvre, cliquez sur l'onglet <strong>\"Code Snippet\"</strong>.",
+        'Collez le JSON dans la zone de texte (<strong>Ctrl+V</strong> ou <strong>Cmd+V</strong>).',
+        'Cliquez sur <strong>"Run test"</strong>.'
+      ],
+      url:'https://validator.schema.org/'
+    });
+  };
 }
+
+function openModal(cfg){
+  document.getElementById('modal-title').textContent=cfg.title;
+  document.getElementById('modal-sub').textContent=cfg.sub;
+  document.getElementById('modal-steps').innerHTML=cfg.steps.map((s,i)=>`<li><span class="num">${i+1}</span><span>${s}</span></li>`).join('');
+  document.getElementById('modal-link').href=cfg.url;
+  document.getElementById('modal-link').textContent='Ouvrir '+(/Google/.test(cfg.title)?'Google Rich Results →':'Schema.org Validator →');
+  document.getElementById('modal').classList.add('show');
+}
+document.getElementById('modal-close').onclick=function(){document.getElementById('modal').classList.remove('show')};
+document.getElementById('modal').addEventListener('click',function(ev){if(ev.target===this)this.classList.remove('show')});
+document.getElementById('modal-link').addEventListener('click',function(){window.open(this.href,'_blank');document.getElementById('modal').classList.remove('show');return false});
 
 function cp(txt,btn,msg){
   const fn=()=>{if(btn&&msg){const o=btn.textContent;btn.textContent='✓ '+msg;btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok')},2000)}};
@@ -411,11 +479,10 @@ function cp(txt,btn,msg){
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
 
-document.getElementById('tg').addEventListener('click',function(ev){
-  const btn=ev.target.closest('[data-t]');if(!btn)return;
-  const nt=btn.dataset.t;if(nt===S.type)return;
+document.getElementById('typesel').addEventListener('change',function(){
+  const nt=this.value;if(nt===S.type)return;
   S.type=nt;S.data={};S.faq=[{q:'',a:''},{q:'',a:''}];S.bc=[{n:'',u:''},{n:'',u:''}];S.ingr=['',''];S.steps=['',''];
-  renderTG();renderForm();renderOut();
+  renderForm();renderOut();
 });
 
 document.getElementById('fc').addEventListener('input',function(ev){
