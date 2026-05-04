@@ -467,48 +467,67 @@ function openModal(cfg){
   document.getElementById('modal-link').textContent='Ouvrir '+(/Google/.test(cfg.title)?'Google Rich Results →':'Schema.org Validator →');
   document.getElementById('modal').classList.add('show');
 }
-document.getElementById('modal-close').onclick=function(){document.getElementById('modal').classList.remove('show')};
-document.getElementById('modal').addEventListener('click',function(ev){if(ev.target===this)this.classList.remove('show')});
-document.getElementById('modal-link').addEventListener('click',function(){window.open(this.href,'_blank');document.getElementById('modal').classList.remove('show');return false});
-
 function cp(txt,btn,msg){
   const fn=()=>{if(btn&&msg){const o=btn.textContent;btn.textContent='✓ '+msg;btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok')},2000)}};
-  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(fn)}
-  else{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);fn()}
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(fn).catch(()=>fallbackCp(txt,fn))}
+  else{fallbackCp(txt,fn)}
+}
+function fallbackCp(txt,fn){const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(fn)fn()}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
+
+function init(){
+  const typesel=document.getElementById('typesel');
+  const fc=document.getElementById('fc');
+  const modalClose=document.getElementById('modal-close');
+  const modal=document.getElementById('modal');
+  const modalLink=document.getElementById('modal-link');
+  // Si les éléments ne sont pas encore dans le DOM, on réessaie dans 50ms
+  if(!typesel||!fc||!modalClose){setTimeout(init,50);return;}
+
+  renderTG();
+  renderForm();
+  renderOut();
+
+  typesel.addEventListener('change',function(){
+    const nt=this.value;if(nt===S.type)return;
+    S.type=nt;S.data={};S.faq=[{q:'',a:''},{q:'',a:''}];S.bc=[{n:'',u:''},{n:'',u:''}];S.ingr=['',''];S.steps=['',''];
+    renderForm();renderOut();
+  });
+
+  fc.addEventListener('input',function(ev){
+    const el=ev.target;
+    if(el.dataset.f!==undefined){S.data[el.dataset.f]=el.value;renderOut();return}
+    if(el.dataset.fq!==undefined){S.faq[+el.dataset.fq].q=el.value;renderOut();return}
+    if(el.dataset.fa!==undefined){S.faq[+el.dataset.fa].a=el.value;renderOut();return}
+    if(el.dataset.bn!==undefined){S.bc[+el.dataset.bn].n=el.value;renderOut();return}
+    if(el.dataset.bu!==undefined){S.bc[+el.dataset.bu].u=el.value;renderOut();return}
+    if(el.dataset.ig!==undefined){S.ingr[+el.dataset.ig]=el.value;renderOut();return}
+    if(el.dataset.st!==undefined){S.steps[+el.dataset.st]=el.value;renderOut();return}
+  });
+
+  fc.addEventListener('click',function(ev){
+    const el=ev.target;
+    if(el.dataset.frm!==undefined){S.faq.splice(+el.dataset.frm,1);renderForm();renderOut();return}
+    if(el.id==='afaq'){S.faq.push({q:'',a:''});renderForm();renderOut();return}
+    if(el.dataset.brm!==undefined){S.bc.splice(+el.dataset.brm,1);renderForm();renderOut();return}
+    if(el.id==='abc'){S.bc.push({n:'',u:''});renderForm();renderOut();return}
+    if(el.dataset.irm!==undefined){S.ingr.splice(+el.dataset.irm,1);renderForm();renderOut();return}
+    if(el.id==='aig'){S.ingr.push('');renderForm();renderOut();return}
+    if(el.dataset.srm!==undefined){S.steps.splice(+el.dataset.srm,1);renderForm();renderOut();return}
+    if(el.id==='ast'){S.steps.push('');renderForm();renderOut();return}
+  });
+
+  modalClose.onclick=function(){modal.classList.remove('show')};
+  modal.addEventListener('click',function(ev){if(ev.target===this)this.classList.remove('show')});
+  modalLink.addEventListener('click',function(){window.open(this.href,'_blank');modal.classList.remove('show');return false});
 }
 
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
-
-document.getElementById('typesel').addEventListener('change',function(){
-  const nt=this.value;if(nt===S.type)return;
-  S.type=nt;S.data={};S.faq=[{q:'',a:''},{q:'',a:''}];S.bc=[{n:'',u:''},{n:'',u:''}];S.ingr=['',''];S.steps=['',''];
-  renderForm();renderOut();
-});
-
-document.getElementById('fc').addEventListener('input',function(ev){
-  const el=ev.target;
-  if(el.dataset.f!==undefined){S.data[el.dataset.f]=el.value;renderOut();return}
-  if(el.dataset.fq!==undefined){S.faq[+el.dataset.fq].q=el.value;renderOut();return}
-  if(el.dataset.fa!==undefined){S.faq[+el.dataset.fa].a=el.value;renderOut();return}
-  if(el.dataset.bn!==undefined){S.bc[+el.dataset.bn].n=el.value;renderOut();return}
-  if(el.dataset.bu!==undefined){S.bc[+el.dataset.bu].u=el.value;renderOut();return}
-  if(el.dataset.ig!==undefined){S.ingr[+el.dataset.ig]=el.value;renderOut();return}
-  if(el.dataset.st!==undefined){S.steps[+el.dataset.st]=el.value;renderOut();return}
-});
-
-document.getElementById('fc').addEventListener('click',function(ev){
-  const el=ev.target;
-  if(el.dataset.frm!==undefined){S.faq.splice(+el.dataset.frm,1);renderForm();renderOut();return}
-  if(el.id==='afaq'){S.faq.push({q:'',a:''});renderForm();renderOut();return}
-  if(el.dataset.brm!==undefined){S.bc.splice(+el.dataset.brm,1);renderForm();renderOut();return}
-  if(el.id==='abc'){S.bc.push({n:'',u:''});renderForm();renderOut();return}
-  if(el.dataset.irm!==undefined){S.ingr.splice(+el.dataset.irm,1);renderForm();renderOut();return}
-  if(el.id==='aig'){S.ingr.push('');renderForm();renderOut();return}
-  if(el.dataset.srm!==undefined){S.steps.splice(+el.dataset.srm,1);renderForm();renderOut();return}
-  if(el.id==='ast'){S.steps.push('');renderForm();renderOut();return}
-});
-
-renderTG();renderForm();renderOut();
+// Démarrage robuste : fonctionne que le script soit exécuté avant ou après le DOM (Divi, WordPress, iframe...)
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+}else{
+  init();
+}
 })();
 </script>
 </body>
