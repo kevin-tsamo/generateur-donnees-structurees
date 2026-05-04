@@ -1,91 +1,172 @@
 import SchemaGenerator from "./components/SchemaGenerator";
 
-export const metadata = {
-  title: "Générateur de Données Structurées Schema.org",
-  description: "Créez facilement vos balises JSON-LD Schema.org pour améliorer votre référencement SEO : Article, LocalBusiness, Produit, FAQ, Événement et bien plus.",
-};
-
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: "var(--kt-bg)" }}>
+      {/* Header */}
+      <header
+        style={{
+          background: "var(--kt-card)",
+          borderBottom: "1px solid var(--kt-border)",
+        }}
+        className="sticky top-0 z-20"
+      >
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                <span className="text-white text-lg">⚡</span>
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: "var(--kt-blue)" }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-white">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
               <div>
-                <h1 className="text-base font-bold text-gray-900 dark:text-white leading-none">
+                <p className="font-bold text-sm leading-none" style={{ color: "var(--kt-text)" }}>
                   Générateur Schema.org
-                </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Données structurées JSON-LD pour le SEO
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: "var(--kt-muted)" }}>
+                  kevintsamo.com
                 </p>
               </div>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
-              <span className="text-xs px-2.5 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full font-medium">
-                ✓ Gratuit
+
+            <div className="flex items-center gap-2">
+              <span
+                className="text-xs px-3 py-1 rounded-full font-semibold hidden sm:inline-flex"
+                style={{
+                  background: "var(--kt-blue-light)",
+                  color: "var(--kt-blue)",
+                }}
+              >
+                Gratuit
               </span>
-              <span className="text-xs px-2.5 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full font-medium">
-                15 types de schémas
-              </span>
+              <a
+                href="https://www.kevintsamo.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-semibold transition-colors hidden sm:inline-flex items-center gap-1"
+                style={{ color: "var(--kt-muted)" }}
+              >
+                kevintsamo.com ↗
+              </a>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-            Générateur de Données Structurées Schema.org
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
-            Créez vos balises <strong>JSON-LD</strong> en quelques secondes pour améliorer votre référencement
-            et obtenir des <strong>Rich Snippets</strong> dans les résultats Google.
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 mt-4">
-            {["Article", "FAQ", "Produit", "Événement", "Recette", "Entreprise locale"].map((tag) => (
-              <span key={tag} className="text-xs px-2.5 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-                {tag}
-              </span>
-            ))}
-            <span className="text-xs px-2.5 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-              +9 autres...
-            </span>
-          </div>
+      {/* Hero */}
+      <section className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 text-center">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-5"
+          style={{ background: "var(--kt-blue-light)", color: "var(--kt-blue)" }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--kt-blue)" }} />
+          Outil SEO gratuit
         </div>
 
+        <h1
+          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight tracking-tight"
+          style={{ color: "var(--kt-text)", fontFamily: "var(--font-jakarta)" }}
+        >
+          Générateur de{" "}
+          <span style={{ color: "var(--kt-blue)" }}>Données Structurées</span>
+          <br className="hidden sm:block" /> Schema.org
+        </h1>
+
+        <p
+          className="text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed"
+          style={{ color: "var(--kt-muted)" }}
+        >
+          Créez vos balises <strong style={{ color: "var(--kt-text)" }}>JSON-LD</strong> en quelques
+          secondes pour décrocher des{" "}
+          <strong style={{ color: "var(--kt-text)" }}>Rich Snippets</strong> dans Google et booster
+          votre SEO.
+        </p>
+
+        {/* Schema type badges */}
+        <div className="flex flex-wrap justify-center gap-2 mb-2">
+          {["Article", "FAQ", "Produit", "Événement", "Recette", "Entreprise locale", "Vidéo", "Offre d'emploi"].map(
+            (tag) => (
+              <span
+                key={tag}
+                className="text-xs px-3 py-1.5 rounded-full font-medium"
+                style={{
+                  background: "var(--kt-card)",
+                  color: "var(--kt-muted)",
+                  border: "1px solid var(--kt-border)",
+                }}
+              >
+                {tag}
+              </span>
+            )
+          )}
+          <span
+            className="text-xs px-3 py-1.5 rounded-full font-medium"
+            style={{
+              background: "var(--kt-card)",
+              color: "var(--kt-blue)",
+              border: "1px solid var(--kt-border)",
+            }}
+          >
+            +7 autres
+          </span>
+        </div>
+      </section>
+
+      {/* Generator */}
+      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <SchemaGenerator />
       </main>
 
-      <footer className="mt-16 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
-            <p>
-              Outil créé par{" "}
-              <a href="https://kevintsamo.fr" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      {/* Footer */}
+      <footer
+        style={{
+          background: "var(--kt-card)",
+          borderTop: "1px solid var(--kt-border)",
+        }}
+      >
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm" style={{ color: "var(--kt-muted)" }}>
+              Outil conçu par{" "}
+              <a
+                href="https://www.kevintsamo.com"
+                className="font-semibold transition-colors"
+                style={{ color: "var(--kt-blue)" }}
+              >
                 Kevin TSAMO
               </a>{" "}
-              — Générateur de données structurées Schema.org
+              — Consultant SEO & Développeur Web
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-5 text-sm" style={{ color: "var(--kt-muted)" }}>
               <a
                 href="https://schema.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="transition-colors hover:underline"
+                style={{ color: "var(--kt-muted)" }}
               >
                 Schema.org ↗
               </a>
               <a
-                href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data"
+                href="https://search.google.com/test/rich-results"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="transition-colors hover:underline"
+                style={{ color: "var(--kt-muted)" }}
               >
-                Guide Google ↗
+                Test Rich Results ↗
+              </a>
+              <a
+                href="https://www.kevintsamo.com/devis-seo/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold transition-colors"
+                style={{ color: "var(--kt-blue)" }}
+              >
+                Besoin d&apos;un audit SEO ? →
               </a>
             </div>
           </div>

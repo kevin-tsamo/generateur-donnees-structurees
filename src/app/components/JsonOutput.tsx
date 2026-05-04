@@ -22,73 +22,115 @@ export default function JsonOutput({ schema }: Props) {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-          JSON-LD généré
-        </h3>
-        <div className="flex gap-2">
-          <a
-            href={`https://validator.schema.org/#url=data:application/ld+json,${encodeURIComponent(json)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
-          >
-            Valider ↗
-          </a>
-          <a
-            href={`https://search.google.com/test/rich-results?code=${encodeURIComponent(scriptTag)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
-          >
-            Test Google ↗
-          </a>
-        </div>
+    <div className="space-y-4">
+      {/* Validation links */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--kt-muted)" }}>
+          Valider :
+        </span>
+        <a
+          href={`https://validator.schema.org/#url=data:application/ld+json,${encodeURIComponent(json)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1.5 font-semibold rounded-full transition-all"
+          style={{
+            background: "var(--kt-blue-light)",
+            color: "var(--kt-blue)",
+          }}
+        >
+          Schema.org ↗
+        </a>
+        <a
+          href={`https://search.google.com/test/rich-results?code=${encodeURIComponent(scriptTag)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs px-3 py-1.5 font-semibold rounded-full transition-all"
+          style={{
+            background: "var(--kt-blue-light)",
+            color: "var(--kt-blue)",
+          }}
+        >
+          Test Google ↗
+        </a>
       </div>
 
+      {/* JSON block */}
       <div className="relative">
-        <pre className="bg-gray-950 dark:bg-gray-900 text-green-400 text-xs p-4 rounded-xl overflow-auto max-h-80 font-mono leading-relaxed border border-gray-800">
+        <pre
+          className="text-xs p-4 overflow-auto font-mono leading-relaxed"
+          style={{
+            background: "#0F172A",
+            color: "#7DD3FC",
+            borderRadius: "var(--kt-radius-sm)",
+            maxHeight: "320px",
+            border: "1px solid #1E293B",
+          }}
+        >
           {json}
         </pre>
         <button
           onClick={() => copy(json, setCopied)}
-          className={`absolute top-2 right-2 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all ${
-            copied
-              ? "bg-green-500 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-          }`}
+          className="absolute top-3 right-3 text-xs px-3 py-1.5 font-semibold rounded-lg transition-all"
+          style={{
+            background: copied ? "#16A34A" : "rgba(255,255,255,0.1)",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.15)",
+          }}
         >
           {copied ? "✓ Copié !" : "Copier JSON"}
         </button>
       </div>
 
-      <div className="relative">
+      {/* Script tag block */}
+      <div>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-            Balise à intégrer dans votre <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">&lt;head&gt;</code> ou avant <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">&lt;/body&gt;</code>
+          <p className="text-xs font-semibold" style={{ color: "var(--kt-muted)" }}>
+            Balise à coller dans le{" "}
+            <code
+              className="px-1 py-0.5 rounded text-xs"
+              style={{ background: "var(--kt-blue-light)", color: "var(--kt-blue)" }}
+            >
+              &lt;head&gt;
+            </code>{" "}
+            de votre page
           </p>
           <button
             onClick={() => copy(scriptTag, setScriptCopied)}
-            className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-              scriptCopied
-                ? "bg-green-500 text-white"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
+            className="text-xs px-4 py-1.5 font-bold rounded-lg transition-all text-white flex-shrink-0"
+            style={{
+              background: scriptCopied ? "#16A34A" : "var(--kt-blue)",
+              borderRadius: "var(--kt-radius-btn)",
+            }}
           >
-            {scriptCopied ? "✓ Copié !" : "Copier la balise"}
+            {scriptCopied ? "✓ Copié !" : "Copier la balise →"}
           </button>
         </div>
-        <pre className="bg-gray-950 dark:bg-gray-900 text-yellow-300 text-xs p-4 rounded-xl overflow-auto max-h-40 font-mono leading-relaxed border border-gray-800">
+        <pre
+          className="text-xs p-4 overflow-auto font-mono leading-relaxed"
+          style={{
+            background: "#0F172A",
+            color: "#FCD34D",
+            borderRadius: "var(--kt-radius-sm)",
+            maxHeight: "160px",
+            border: "1px solid #1E293B",
+          }}
+        >
           {scriptTag}
         </pre>
       </div>
 
-      <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-        <span className="text-blue-500 text-sm mt-0.5">ℹ️</span>
-        <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-          Collez cette balise dans le <code className="font-mono bg-blue-100 dark:bg-blue-900/40 px-1 rounded">&lt;head&gt;</code> de votre page HTML.
-          Testez ensuite avec l&apos;outil de test de résultats enrichis de Google pour valider l&apos;intégration.
+      {/* Tip */}
+      <div
+        className="flex gap-3 p-3 rounded-xl"
+        style={{
+          background: "var(--kt-blue-light)",
+          border: "1px solid var(--kt-blue-mid)",
+        }}
+      >
+        <span className="text-base flex-shrink-0 mt-0.5">💡</span>
+        <p className="text-xs leading-relaxed" style={{ color: "var(--kt-blue)" }}>
+          <strong>WordPress / Divi :</strong> Collez la balise dans{" "}
+          <em>Divi → Thème Options → Intégration → head</em>, ou dans un module Code sur la page concernée.
         </p>
       </div>
     </div>
